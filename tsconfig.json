@@ -21,7 +21,6 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./ts/greeter.ts",
         "./ts/main.ts",
         "./typings/jquery/jquery.d.ts",
         "./typings/tsd.d.ts"
