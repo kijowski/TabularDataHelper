@@ -3,6 +3,7 @@ import React = require("react");
 interface RowProps {
   row : string
   delimeter : string
+  key : string
 }
 
 class RowComponent extends React.Component<RowProps,void>{
@@ -11,7 +12,7 @@ class RowComponent extends React.Component<RowProps,void>{
     let columns = this.props.row.split(this.props.delimeter);
 
     return <tr>
-      {columns.map((column, index) => <td>{column}</td>)}
+      {columns.map((column, index) => <td key={index}>{column}</td>)}
       </tr>
   }
 }
@@ -28,7 +29,7 @@ interface FileState {
 class FileComponent extends React.Component<FileProps,FileState> {
     render(){
       let rows = this.props.content.split("\n");
-      return <table><tbody>{rows.map((row, index) => <RowComponent row={row} delimeter = ','/>)}</tbody></table>
+      return <table><tbody>{rows.map((row, index) => <RowComponent key={index.toString()} row={row} delimeter = ','/>)}</tbody></table>
     }
 }
 
