@@ -15,3 +15,21 @@ class RowComponent extends React.Component<RowProps,void>{
       </tr>
   }
 }
+
+interface FileProps {
+  content : string
+}
+
+interface FileState {
+  row : string
+  delimeter : string
+}
+
+class FileComponent extends React.Component<FileProps,FileState> {
+    render(){
+      let rows = this.props.content.split("\n");
+      return <table><tbody>{rows.map((row, index) => <RowComponent row={row} delimeter = ','/>)}</tbody></table>
+    }
+}
+
+export {FileComponent}

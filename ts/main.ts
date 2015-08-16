@@ -1,6 +1,8 @@
 import React = require('react');
-import testComp = require('./testComponent');
+import tfc = require('./TabularFileComponent');
 
 window.onload = function () {
-  React.render(React.createElement(testComp.TestReact,{testProp : "34"}), document.getElementById("mount"));
+  var props  = {content : "First, row\nSecond,row,with,more,columns\nAnd,third,row"};
+  var element = React.createElement(tfc.FileComponent,props);
+  React.render(element, document.getElementById("mount"));
 }
