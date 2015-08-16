@@ -25,6 +25,7 @@
         "./typings/jquery/jquery.d.ts",
         "./typings/react/react.d.ts",
         "./typings/tsd.d.ts",
+        "./ts/TabularFileComponent.tsx",
         "./ts/testComponent.tsx"
     ]
 }
