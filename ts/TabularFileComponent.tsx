@@ -32,6 +32,27 @@ class FileComponent extends React.Component<FileProps,void> {
 interface FileInputProps {
   callback : (content:string) => void
 }
+
+class FileInput extends React.Component<FileInputProps,void> {
+  onClick = () => {
+    let newContent = React.findDOMNode<HTMLTextAreaElement>(this.refs['contentArea']).value;
+    this.props.callback(newContent)
+  }
+  render(){
+    return <div>
+            <textarea placeholder="Content..." ref='contentArea'/>
+            <input type="button" value='Go' onClick={this.onClick}/>
+          </div>
+  }
+}
+
+
+interface WrapperProps {
+
+}
+
+interface WrapperState {
+  content : string
   delimeter : string
 }
 
