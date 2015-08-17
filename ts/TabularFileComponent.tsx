@@ -56,8 +56,23 @@ interface WrapperState {
   delimeter : string
 }
 
+class TabularDataWrapper extends React.Component<WrapperProps, WrapperState>{
+  state : WrapperState = {
+    content :  "First, row\nSecond,row,with,more,columns\nAnd,third,row",
+    delimeter : ","
+  }
+
+  private contendLoaded = (content:string) => {
+      let newState = {content : content, delimeter:this.state.delimeter}
+      this.setState(newState)
+  }
+
     render(){
+      return <div>
+              <FileComponent content={this.state.content} delimeter={this.state.delimeter}/>
+              <FileInput callback={this.contendLoaded}/>
+            </div>
     }
 }
 
-export {FileComponent}
+export {TabularDataWrapper}

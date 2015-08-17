@@ -3,6 +3,6 @@ import tfc = require('./TabularFileComponent');
 
 window.onload = function () {
   var props  = {content : "First, row\nSecond,row,with,more,columns\nAnd,third,row"};
-  var element = React.createElement(tfc.FileComponent,props);
+  var element = React.createElement(tfc.TabularDataWrapper,props);
   React.render(element, document.getElementById("mount"));
 }
