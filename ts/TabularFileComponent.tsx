@@ -61,8 +61,35 @@ class FileComponent extends React.Component<FileProps,FileState> {
     }
 
     onHeaderClick = (mouseEvent) => {
-      let newDirection = this.state.orderByColumn == mouseEvent?!this.state.ascendingOrder:true;
-      this.setState({orderByColumn : mouseEvent, ascendingOrder : newDirection})
+      // let newDirection = this.state.orderByColumn == mouseEvent?!this.state.ascendingOrder:true;
+      if (this.state.orderByColumn === -1) {
+        let newHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[mouseEvent])
+        newHeader.classList.add("ascending")
+        this.setState({orderByColumn : mouseEvent, ascendingOrder : true})
+      }
+      else{
+        let oldHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[this.state.orderByColumn])
+        let newHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[mouseEvent])
+        if (this.state.orderByColumn == mouseEvent) {
+          if (this.state.ascendingOrder) {
+            oldHeader.classList.remove("ascending")
+            newHeader.classList.add("descending")
+            this.setState({orderByColumn : mouseEvent, ascendingOrder : false})
+
+          }
+          else{
+            oldHeader.classList.remove("ascending")
+            oldHeader.classList.remove("descending")
+            this.setState({orderByColumn : -1, ascendingOrder : false})
+          }
+        }
+        else{
+          oldHeader.classList.remove("ascending")
+          oldHeader.classList.remove("descending")
+          newHeader.classList.add("ascending")
+          this.setState({orderByColumn : mouseEvent, ascendingOrder : true})
+        }
+      }
     }
 
     render(){
