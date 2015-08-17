@@ -1,0 +1,6 @@
+.ascending::after {
+  content: '\25BC'
+}
+.descending::after {
+  content: '\25B2'
+}

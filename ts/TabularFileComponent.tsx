@@ -71,8 +71,12 @@ class FileComponent extends React.Component<FileProps,FileState> {
       for (let i = 0; i < this.maxLength; i++) {
         headers[i] = i;
       }
-      return <table>
-              <thead><tr>{headers.map((row) => <td key={row} onClick={this.onHeaderClick.bind(null,row)}>Column {row}</td>)}</tr></thead>
+      let tableStyle = {
+        display : 'block',
+        overflowX : 'auto'
+      }
+      return <table style={tableStyle}>
+              <thead><tr>{headers.map((row) => <th key={row} ref={row} onClick={this.onHeaderClick.bind(null,row)}><a href={'#'}>C{row}</a></th>)}</tr></thead>
               <tbody>{rows.map((row, index) => <RowComponent key={index.toString()} row={row}/>)}</tbody>
              </table>
     }
@@ -88,10 +92,10 @@ class FileInput extends React.Component<FileInputProps,void> {
     this.props.callback(newContent)
   }
   render(){
-    return <div>
-            <textarea placeholder="Content..." ref='contentArea'/>
-            <input type="button" value='Load' onClick={this.onClick}/>
-          </div>
+    return <form>
+            <textarea className='u-full-width' placeholder="Content..." ref='contentArea'/>
+            <input type="button" className='button-primary' value='Load' onClick={this.onClick} readOnly/>
+          </form>
   }
 }
 
