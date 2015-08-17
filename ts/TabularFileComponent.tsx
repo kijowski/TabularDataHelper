@@ -41,11 +41,10 @@ class FileInput extends React.Component<FileInputProps,void> {
   render(){
     return <div>
             <textarea placeholder="Content..." ref='contentArea'/>
-            <input type="button" value='Go' onClick={this.onClick}/>
+            <input type="button" value='Load' onClick={this.onClick}/>
           </div>
   }
 }
-
 
 interface WrapperProps {
 
@@ -62,7 +61,7 @@ class TabularDataWrapper extends React.Component<WrapperProps, WrapperState>{
     delimeter : ","
   }
 
-  private contendLoaded = (content:string) => {
+  private contentLoaded = (content:string) => {
       let newState = {content : content, delimeter:this.state.delimeter}
       this.setState(newState)
   }
@@ -70,7 +69,7 @@ class TabularDataWrapper extends React.Component<WrapperProps, WrapperState>{
     render(){
       return <div>
               <FileComponent content={this.state.content} delimeter={this.state.delimeter}/>
-              <FileInput callback={this.contendLoaded}/>
+              <FileInput callback={this.contentLoaded}/>
             </div>
     }
 }
