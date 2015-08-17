@@ -19,17 +19,23 @@ class RowComponent extends React.Component<RowProps,void>{
 
 interface FileProps {
   content : string
-}
-
-interface FileState {
-  row : string
   delimeter : string
 }
 
-class FileComponent extends React.Component<FileProps,FileState> {
+class FileComponent extends React.Component<FileProps,void> {
     render(){
       let rows = this.props.content.split("\n");
-      return <table><tbody>{rows.map((row, index) => <RowComponent key={index.toString()} row={row} delimeter = ','/>)}</tbody></table>
+      return <table><tbody>{rows.map((row, index) => <RowComponent key={index.toString()} row={row} delimeter = {this.props.delimeter}/>)}</tbody></table>
+    }
+}
+
+interface FileInputProps {
+  callback : (content:string) => void
+}
+  delimeter : string
+}
+
+    render(){
     }
 }
 
