@@ -92,37 +92,56 @@ class FileComponent extends React.Component<FileProps,FileState> {
       }
     }
 
+    getHeaders = () => {
+      let headers = []
+      for (let row = 0; row < this.maxLength; row++) {
+          headers.push(<th key={row} ref={row.toString()} onClick={this.onHeaderClick.bind(null,row)}><a href={'#'}>C{row}</a></th>)
+      }
+      return headers;
+    }
+
     render(){
       let rows = this.processRows(this.props.content.split("\n"));
-      let headers =[];
-      for (let i = 0; i < this.maxLength; i++) {
-        headers[i] = i;
-      }
+      let headers = this.getHeaders()
       let tableStyle = {
         display : 'block',
         overflowX : 'auto'
       }
       return <table style={tableStyle}>
-              <thead><tr>{headers.map((row) => <th key={row} ref={row} onClick={this.onHeaderClick.bind(null,row)}><a href={'#'}>C{row}</a></th>)}</tr></thead>
+              <thead><tr>{headers}</tr></thead>
               <tbody>{rows.map((row, index) => <RowComponent key={index.toString()} row={row}/>)}</tbody>
              </table>
     }
 }
 
 interface FileInputProps {
-  callback : (content:string) => void
+  callback : (content:string, delimeter:string) => void
 }
 
 class FileInput extends React.Component<FileInputProps,void> {
   onClick = () => {
     let newContent = React.findDOMNode<HTMLTextAreaElement>(this.refs['contentArea']).value;
-    this.props.callback(newContent)
+    let newDelimeter = React.findDOMNode<HTMLSelectElement>(this.refs['delimeter']).value;
+    this.props.callback(newContent, newDelimeter)
   }
   render(){
-    return <form>
-            <textarea className='u-full-width' placeholder="Content..." ref='contentArea'/>
-            <input type="button" className='button-primary' value='Load' onClick={this.onClick} readOnly/>
-          </form>
+    return <div>
+            <div className='six columns'>
+              <label>Content</label>
+              <textarea placeholder="Content..." ref='contentArea'/>
+            </div>
+            <div className='six columns'>
+              <label>Delimeter</label>
+              <select id="test" ref='delimeter'>
+                <option value=",">Comma</option>
+                <option value=" ">Space</option>
+                <option value="\t">Tab</option>
+                <option value=";">Colon</option>
+                <option value="\-">Hyphen</option>
+              </select>
+            </div>
+            <input type="button" className='button-primary u-full-width' value='Load' onClick={this.onClick} readOnly/>
+          </div>
   }
 }
 
@@ -131,25 +150,52 @@ interface WrapperProps {
 }
 
 interface WrapperState {
-  content : string
-  delimeter : string
+  leftContent : string
+  rightContent : string
+  leftDelimeter : string
+  rightDelimeter : string
 }
 
 class TabularDataWrapper extends React.Component<WrapperProps, WrapperState>{
   state : WrapperState = {
-    content :  "First, row\nSecond,row,with,more,columns\nAnd,third,row",
-    delimeter : ","
+    leftContent :  "",
+    rightContent :  "",
+    leftDelimeter : ",",
+    rightDelimeter : ","
+  }
+  private copyState = () =>{
+    let newState :WrapperState = {
+      leftContent: this.state.leftContent,
+      rightContent: this.state.rightContent,
+      leftDelimeter: this.state.leftDelimeter,
+      rightDelimeter: this.state.rightDelimeter
+    }
+    return newState
   }
 
-  private contentLoaded = (content:string) => {
-      let newState = {content : content, delimeter:this.state.delimeter}
+  private leftContentLoaded = (content:string, delimeter:string) => {
+      let newState = this.copyState()//{leftContent : content, delimeter:this.state.delimeter}
+      newState.leftContent = content;
+      newState.leftDelimeter = delimeter
       this.setState(newState)
   }
 
+  private rightContentLoaded = (content:string, delimeter:string) => {
+    let newState = this.copyState()//{leftContent : content, delimeter:this.state.delimeter}
+    newState.rightContent = content
+    newState.rightDelimeter = delimeter
+    this.setState(newState)
+  }
     render(){
-      return <div>
-              <FileComponent content={this.state.content} delimeter={this.state.delimeter}/>
-              <FileInput callback={this.contentLoaded}/>
+      return <div className="row">
+              <div className='six columns'>
+                <FileComponent content={this.state.leftContent} delimeter={this.state.leftDelimeter}/>
+                <FileInput callback={this.leftContentLoaded}/>
+              </div>
+              <div className='six columns'>
+                <FileComponent content={this.state.rightContent} delimeter={this.state.rightDelimeter}/>
+                <FileInput callback={this.rightContentLoaded}/>
+                </div>
             </div>
     }
 }
