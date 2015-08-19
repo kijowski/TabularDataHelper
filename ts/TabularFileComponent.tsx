@@ -108,7 +108,6 @@ class FileComponent extends React.Component<FileProps,FileState> {
       let headers = []
       for (let row = 0; row < this.maxLength; row++) {
           headers.push(<th key={row} ref={row.toString()} >
-          C{row}{' '}
           <small><a href={'#'} onClick={this.onHeaderClick.bind(null,row)}>sort</a>{' '}
           <a href={'#'} onClick={this.onDoubleClick.bind(null,row)}>copy</a></small>
           </th>)
