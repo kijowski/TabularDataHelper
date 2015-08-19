@@ -4,3 +4,6 @@
 .descending::after {
   content: '\25B2'
 }
+textarea {
+  min-height: 38px;
+}
