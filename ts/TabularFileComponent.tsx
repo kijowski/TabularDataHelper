@@ -32,7 +32,7 @@ class FileComponent extends React.Component<FileProps,FileState> {
 
     }
     maxLength : number;
-
+    rows : string[][];
     processRows = (rows:string[]) => {
       let rowComparer = (x,y) => {
         let firstItem = x[this.state.orderByColumn]
@@ -92,16 +92,32 @@ class FileComponent extends React.Component<FileProps,FileState> {
       }
     }
 
+    onDoubleClick = (colNo) => {
+      let text = ""
+      for (let row of this.rows) {
+        if (typeof row[colNo]!=='undefined') {
+          text = text + row[colNo] + "\n";
+        }        
+      }
+      //console.log(text)
+      alert(text);
+
+    }
+
     getHeaders = () => {
       let headers = []
       for (let row = 0; row < this.maxLength; row++) {
-          headers.push(<th key={row} ref={row.toString()} onClick={this.onHeaderClick.bind(null,row)}><a href={'#'}>C{row}</a></th>)
+          headers.push(<th key={row} ref={row.toString()} >
+          C{row}{' '}
+          <small><a href={'#'} onClick={this.onHeaderClick.bind(null,row)}>sort</a>{' '}
+          <a href={'#'} onClick={this.onDoubleClick.bind(null,row)}>copy</a></small>
+          </th>)
       }
       return headers;
     }
 
     render(){
-      let rows = this.processRows(this.props.content.split("\n"));
+      this.rows = this.processRows(this.props.content.split("\n"));
       let headers = this.getHeaders()
       let tableStyle = {
         display : 'block',
@@ -109,7 +125,7 @@ class FileComponent extends React.Component<FileProps,FileState> {
       }
       return <table style={tableStyle}>
               <thead><tr>{headers}</tr></thead>
-              <tbody>{rows.map((row, index) => <RowComponent key={index.toString()} row={row}/>)}</tbody>
+              <tbody>{this.rows.map((row, index) => <RowComponent key={index.toString()} row={row}/>)}</tbody>
              </table>
     }
 }
@@ -189,12 +205,12 @@ class TabularDataWrapper extends React.Component<WrapperProps, WrapperState>{
     render(){
       return <div className="row">
               <div className='six columns'>
-                <FileComponent content={this.state.leftContent} delimeter={this.state.leftDelimeter}/>
                 <FileInput callback={this.leftContentLoaded}/>
+                <FileComponent content={this.state.leftContent} delimeter={this.state.leftDelimeter}/>
               </div>
               <div className='six columns'>
-                <FileComponent content={this.state.rightContent} delimeter={this.state.rightDelimeter}/>
                 <FileInput callback={this.rightContentLoaded}/>
+                <FileComponent content={this.state.rightContent} delimeter={this.state.rightDelimeter}/>
                 </div>
             </div>
     }
