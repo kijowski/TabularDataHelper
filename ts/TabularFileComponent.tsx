@@ -28,11 +28,10 @@ class FileComponent extends React.Component<FileProps,FileState> {
       orderByColumn : -1,
       ascendingOrder : true
     }
-    getDifferences = (other:FileComponent) => {
 
-    }
     maxLength : number;
     rows : string[][];
+
     processRows = (rows:string[]) => {
       let rowComparer = (x,y) => {
         let firstItem = x[this.state.orderByColumn]
@@ -52,8 +51,10 @@ class FileComponent extends React.Component<FileProps,FileState> {
         }
       }
 
-      let splittedRows = rows.map(row => row.split(this.props.delimeter))
+      let splittedRows = rows.filter(row => row.length > 0).map(row => row.split(this.props.delimeter))
       this.maxLength = Math.max.apply(Math,splittedRows.map((x) => x.length))
+      console.log(splittedRows)
+      console.log(this.maxLength)
       if (this.state.orderByColumn >= 0) {
         return splittedRows.sort((x,y) => rowComparer(x,y))
       }
@@ -61,7 +62,6 @@ class FileComponent extends React.Component<FileProps,FileState> {
     }
 
     onHeaderClick = (mouseEvent) => {
-      // let newDirection = this.state.orderByColumn == mouseEvent?!this.state.ascendingOrder:true;
       if (this.state.orderByColumn === -1) {
         let newHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[mouseEvent])
         newHeader.classList.add("ascending")
@@ -116,7 +116,7 @@ class FileComponent extends React.Component<FileProps,FileState> {
     }
 
     render(){
-      this.rows = this.processRows(this.props.content.split("\n"));
+      this.rows = this.processRows(this.props.content.trim().split("\n"));
       let headers = this.getHeaders()
       let tableStyle = {
         display : 'block',
@@ -143,9 +143,13 @@ class FileInput extends React.Component<FileInputProps,void> {
   }
   render(){
     return <div className="row">
+            <div className='six columns'>
+            <h3>Tabular Data Helper</h3>
+              <small>Small utility usefull for comparing tabular data extracted from different sources</small>
+              </div>
             <div className='two columns'>
               <label>Content</label>
-              <textarea onChange={this.onClick} rows={1} placeholder="Content..." ref='contentArea'/>
+              <textarea onChange={this.onClick} rows={1} placeholder="Paste here..." ref='contentArea'/>
             </div>
             <div className='three columns'>
               <label>Delimeter</label>
