@@ -53,8 +53,6 @@ class FileComponent extends React.Component<FileProps,FileState> {
 
       let splittedRows = rows.filter(row => row.length > 0).map(row => row.split(this.props.delimeter))
       this.maxLength = Math.max.apply(Math,splittedRows.map((x) => x.length))
-      console.log(splittedRows)
-      console.log(this.maxLength)
       if (this.state.orderByColumn >= 0) {
         return splittedRows.sort((x,y) => rowComparer(x,y))
       }
