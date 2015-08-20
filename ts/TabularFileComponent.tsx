@@ -1,19 +1,5 @@
 import React = require("react");
 
-interface RowProps {
-  row : string[]
-  key : string
-}
-
-class RowComponent extends React.Component<RowProps,void>{
-
-  render() {
-    return <tr>
-      {this.props.row.map((column, index) => <td key={index}>{column}</td>)}
-      </tr>
-  }
-}
-
 interface FileProps {
   content : string
   delimeter : string
@@ -59,7 +45,7 @@ class FileComponent extends React.Component<FileProps,FileState> {
       return splittedRows
     }
 
-    onHeaderClick = (mouseEvent) => {
+    sortCommand = (mouseEvent) => {
       if (this.state.orderByColumn === -1) {
         let newHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[mouseEvent])
         newHeader.classList.add("ascending")
@@ -90,24 +76,22 @@ class FileComponent extends React.Component<FileProps,FileState> {
       }
     }
 
-    onDoubleClick = (colNo) => {
+    copyCommand = (colNo) => {
       let text = ""
       for (let row of this.rows) {
         if (typeof row[colNo]!=='undefined') {
           text = text + row[colNo] + "\n";
         }
       }
-      //console.log(text)
       alert(text);
-
     }
 
     getHeaders = () => {
       let headers = []
       for (let row = 0; row < this.maxLength; row++) {
           headers.push(<th key={row} ref={row.toString()} >
-          <small><a href={'#'} onClick={this.onHeaderClick.bind(null,row)}>sort</a>{' '}
-          <a href={'#'} onClick={this.onDoubleClick.bind(null,row)}>copy</a></small>
+          <small><a href={'#'} onClick={this.sortCommand.bind(null,row)}>sort</a>{' '}
+          <a href={'#'} onClick={this.copyCommand.bind(null,row)}>copy</a></small>
           </th>)
       }
       return headers;
@@ -123,7 +107,7 @@ class FileComponent extends React.Component<FileProps,FileState> {
       return <div className="row">
               <table style={tableStyle}>
               <thead><tr>{headers}</tr></thead>
-              <tbody>{this.rows.map((row, index) => <RowComponent key={index.toString()} row={row}/>)}</tbody>
+              <tbody>{this.rows.map((row, index) => row.map((column, colIndex) => <td>{column}</td>))}</tbody>
              </table>
              </div>
     }
