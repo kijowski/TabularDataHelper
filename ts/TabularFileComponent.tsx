@@ -15,9 +15,6 @@ class FileComponent extends React.Component<FileProps,FileState> {
       ascendingOrder : true
     }
 
-    maxLength : number;
-    rows : string[][];
-
     processRows = (rows:string[]) => {
       let rowComparer = (x,y) => {
         let firstItem = x[this.state.orderByColumn]
@@ -38,7 +35,6 @@ class FileComponent extends React.Component<FileProps,FileState> {
       }
 
       let splittedRows = rows.filter(row => row.length > 0).map(row => row.split(this.props.delimeter))
-      this.maxLength = Math.max.apply(Math,splittedRows.map((x) => x.length))
       if (this.state.orderByColumn >= 0) {
         return splittedRows.sort((x,y) => rowComparer(x,y))
       }
@@ -76,9 +72,9 @@ class FileComponent extends React.Component<FileProps,FileState> {
       }
     }
 
-    copyCommand = (colNo) => {
+    copyCommand = (rows,colNo) => {
       let text = ""
-      for (let row of this.rows) {
+      for (let row of rows) {
         if (typeof row[colNo]!=='undefined') {
           text = text + row[colNo] + "\n";
         }
@@ -86,20 +82,21 @@ class FileComponent extends React.Component<FileProps,FileState> {
       alert(text);
     }
 
-    getHeaders = () => {
+    getHeaders = (rows) => {
+      let maxLength = Math.max.apply(Math,rows.map((x) => x.length))
       let headers = []
-      for (let row = 0; row < this.maxLength; row++) {
+      for (let row = 0; row < maxLength; row++) {
           headers.push(<th key={row} ref={row.toString()} >
           <small><a href={'#'} onClick={this.sortCommand.bind(null,row)}>sort</a>{' '}
-          <a href={'#'} onClick={this.copyCommand.bind(null,row)}>copy</a></small>
+          <a href={'#'} onClick={this.copyCommand.bind(null,rows,row)}>copy</a></small>
           </th>)
       }
       return headers;
     }
 
     render(){
-      this.rows = this.processRows(this.props.content.trim().split("\n"));
-      let headers = this.getHeaders()
+      let rows = this.processRows(this.props.content.trim().split("\n"));
+      let headers = this.getHeaders(rows)
       let tableStyle = {
         display : 'block',
         overflowX : 'auto'
@@ -107,7 +104,7 @@ class FileComponent extends React.Component<FileProps,FileState> {
       return <div className="row">
               <table style={tableStyle}>
               <thead><tr>{headers}</tr></thead>
-              <tbody>{this.rows.map((row, index) => row.map((column, colIndex) => <td>{column}</td>))}</tbody>
+              <tbody>{rows.map((row, index) => <tr>{row.map((column, colIndex) => <td>{column}</td>)}</tr>)}</tbody>
              </table>
              </div>
     }
@@ -118,24 +115,20 @@ interface FileInputProps {
 }
 
 class FileInput extends React.Component<FileInputProps,void> {
-  onClick = () => {
+  update = () => {
     let newContent = React.findDOMNode<HTMLTextAreaElement>(this.refs['contentArea']).value;
     let newDelimeter = React.findDOMNode<HTMLSelectElement>(this.refs['delimeter']).value;
     this.props.callback(newContent, newDelimeter)
   }
   render(){
-    return <div className="row">
-            <div className='six columns'>
-            <h3>Tabular Data Helper</h3>
-              <small>Small utility usefull for comparing tabular data extracted from different sources</small>
-              </div>
+    return <div>
             <div className='two columns'>
               <label>Content</label>
-              <textarea onChange={this.onClick} rows={1} placeholder="Paste here..." ref='contentArea'/>
+              <textarea onChange={this.update} placeholder="Paste here..." ref='contentArea'/>
             </div>
             <div className='three columns'>
               <label>Delimeter</label>
-              <select id="test" ref='delimeter' onChange={this.onClick}>
+              <select ref='delimeter' onChange={this.update}>
                 <option value=",">Comma</option>
                 <option value=" ">Space</option>
                 <option value="\t">Tab</option>
@@ -157,27 +150,29 @@ class TabularDataWrapper extends React.Component<void, WrapperState>{
     content :  "",
     delimeter : ","
   }
-  private copyState = () =>{
-    let newState :WrapperState = {
-      content: this.state.content,
-      delimeter: this.state.delimeter
-    }
-    return newState
-  }
 
   private contentLoaded = (content:string, delimeter:string) => {
-      let newState = this.copyState()
-      newState.content = content;
-      newState.delimeter = delimeter;
+      let newState = {
+      content : content,
+      delimeter : delimeter
+      }
       this.setState(newState)
   }
 
-    render(){
-      return <div>
-                <FileInput callback={this.contentLoaded}/>
-                <FileComponent content={this.state.content} delimeter={this.state.delimeter}/>
-            </div>
-    }
+  render(){
+    return <div>
+            <div className='row'>
+              <div className='six columns'>
+              <h3>Tabular Data Helper</h3>
+                <small>Small utility usefull for comparing tabular data extracted from different sources</small>
+              </div>
+              <FileInput callback={this.contentLoaded}/>
+              </div>
+              <div className='row'>
+              <FileComponent content={this.state.content} delimeter={this.state.delimeter}/>
+          </div>
+          </div>
+  }
 }
 
 export {TabularDataWrapper}
