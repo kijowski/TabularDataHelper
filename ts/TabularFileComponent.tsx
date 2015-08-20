@@ -41,33 +41,27 @@ class FileComponent extends React.Component<FileProps,FileState> {
       return splittedRows
     }
 
-    sortCommand = (mouseEvent) => {
+    sortCommand = (sortingColumn) => {
+      let oldHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[this.state.orderByColumn])
+      let newHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[sortingColumn])
+
       if (this.state.orderByColumn === -1) {
-        let newHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[mouseEvent])
         newHeader.classList.add("ascending")
-        this.setState({orderByColumn : mouseEvent, ascendingOrder : true})
+        this.setState({orderByColumn : sortingColumn, ascendingOrder : true})
       }
       else{
-        let oldHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[this.state.orderByColumn])
-        let newHeader = React.findDOMNode<HTMLTableHeaderCellElement>(this.refs[mouseEvent])
-        if (this.state.orderByColumn == mouseEvent) {
-          if (this.state.ascendingOrder) {
-            oldHeader.classList.remove("ascending")
-            newHeader.classList.add("descending")
-            this.setState({orderByColumn : mouseEvent, ascendingOrder : false})
-
-          }
-          else{
-            oldHeader.classList.remove("ascending")
-            oldHeader.classList.remove("descending")
-            this.setState({orderByColumn : -1, ascendingOrder : false})
-          }
+        oldHeader.classList.remove("ascending")
+        oldHeader.classList.remove("descending")
+        if (this.state.orderByColumn === sortingColumn && this.state.ascendingOrder) {
+          newHeader.classList.add("descending")
+          this.setState({orderByColumn : sortingColumn, ascendingOrder : false})
+        }
+        else if(this.state.orderByColumn === sortingColumn ){
+          this.setState({orderByColumn : -1, ascendingOrder : false})
         }
         else{
-          oldHeader.classList.remove("ascending")
-          oldHeader.classList.remove("descending")
           newHeader.classList.add("ascending")
-          this.setState({orderByColumn : mouseEvent, ascendingOrder : true})
+          this.setState({orderByColumn : sortingColumn, ascendingOrder : true})
         }
       }
     }
@@ -104,7 +98,7 @@ class FileComponent extends React.Component<FileProps,FileState> {
       return <div className="row">
               <table style={tableStyle}>
               <thead><tr>{headers}</tr></thead>
-              <tbody>{rows.map((row, index) => <tr>{row.map((column, colIndex) => <td>{column}</td>)}</tr>)}</tbody>
+              <tbody>{rows.map((row, index) => <tr key={index}>{row.map((column, colIndex) => <td key={colIndex}>{column}</td>)}</tr>)}</tbody>
              </table>
              </div>
     }
