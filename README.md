@@ -1,4 +1,4 @@
-# Tabular Data Helper
+# [Tabular Data Helper](http://kijowski.github.io/TabularDataHelper/)
 > Web utility for working with tabular data.
 
 During my regular job I had to deal with tabular data from various sources on semi-regular basis. Because of that I have created this simple utility to scratch my personal itch.
